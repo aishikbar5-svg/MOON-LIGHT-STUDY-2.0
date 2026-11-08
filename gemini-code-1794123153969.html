@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOON LIGHT STUDY'S</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased overflow-x-hidden">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3 cursor-pointer" id="nav-brand" onclick="app.showScreen('landing')">
+                    <div class="bg-white text-indigo-900 p-2 rounded-full flex items-center justify-center h-10 w-10">
+                        <i class="fa-solid fa-moon text-xl"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-wide hidden sm:block">MOON LIGHT STUDY'S</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div id="user-profile-badge" class="hidden items-center gap-2 bg-indigo-800 px-3 py-1.5 rounded-full border border-indigo-700">
+                        <i class="fa-solid fa-user-circle text-lg"></i>
+                        <span id="user-role-text" class="text-sm font-medium capitalize"></span>
+                    </div>
+                    <button id="logout-btn" class="hidden bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm" onclick="app.logout()">
+                        <i class="fa-solid fa-sign-out-alt mr-1"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="min-h-[calc(100vh-4rem)] relative w-full">
+        
+        <!-- 1. Landing Screen -->
+        <section id="screen-landing" class="screen-section active absolute inset-0 flex flex-col items-center justify-center p-4 bg-gradient-to-br from-indigo-50 to-blue-100">
+            <div class="text-center max-w-3xl mb-12">
+                <div class="inline-flex items-center justify-center h-24 w-24 bg-indigo-900 text-white rounded-full mb-6 shadow-xl animate-bounce-slow">
+                    <i class="fa-solid fa-moon text-5xl"></i>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold text-indigo-900 mb-4 tracking-tight">Welcome to <br class="md:hidden"/>MOON LIGHT STUDY'S</h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Your comprehensive digital learning environment. Select your portal to begin exploring resources, managing content, and tracking progress.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl px-4">
+                <!-- Student Card -->
+                <div class="portal-card bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer group" onclick="app.showLogin('student')">
+                    <div class="h-32 bg-blue-500 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                        <i class="fa-solid fa-user-graduate text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Student Portal</h2>
+                        <p class="text-gray-500 text-sm mb-4">Access your study materials, take exams, and view your progress.</p>
+                        <span class="inline-block text-blue-500 font-semibold group-hover:underline">Enter Portal &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Teacher Card -->
+                <div class="portal-card bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer group" onclick="app.showLogin('teacher')">
+                    <div class="h-32 bg-emerald-500 flex items-center justify-center group-hover:bg-emerald-600 transition-colors">
+                        <i class="fa-solid fa-chalkboard-teacher text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Teacher Portal</h2>
+                        <p class="text-gray-500 text-sm mb-4">Upload notes, create exams, manage documents, and guide students.</p>
+                        <span class="inline-block text-emerald-500 font-semibold group-hover:underline">Enter Portal &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Admin Card -->
+                <div class="portal-card bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer group" onclick="app.showLogin('admin')">
+                    <div class="h-32 bg-purple-600 flex items-center justify-center group-hover:bg-purple-700 transition-colors">
+                        <i class="fa-solid fa-shield-halved text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Admin Panel</h2>
+                        <p class="text-gray-500 text-sm mb-4">Oversee the entire platform, manage users, and monitor system health.</p>
+                        <span class="inline-block text-purple-600 font-semibold group-hover:underline">Enter Dashboard &rarr;</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Unified Login Screen -->
+        <section id="screen-login" class="screen-section hidden absolute inset-0 flex items-center justify-center p-4 bg-gray-100">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative">
+                <button onclick="app.showScreen('landing')" class="absolute top-4 left-4 text-gray-400 hover:text-gray-700 transition-colors">
+                    <i class="fa-solid fa-arrow-left text-xl"></i>
+                </button>
+                <div id="login-header-color" class="h-32 flex flex-col items-center justify-center text-white p-6">
+                    <i id="login-icon" class="fa-solid text-4xl mb-2"></i>
+                    <h2 id="login-title" class="text-2xl font-bold">Login</h2>
+                </div>
+                <div class="p-8">
+                    <form id="login-form" class="space-y-5" onsubmit="event.preventDefault(); app.handleLogin();">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">User ID / Username</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fa-solid fa-user text-gray-400"></i>
+                                </div>
+                                <input type="text" id="login-username" required class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-shadow" placeholder="Enter User ID">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fa-solid fa-lock text-gray-400"></i>
+                                </div>
+                                <input type="password" id="login-password" required class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-shadow" placeholder="Enter Password">
+                            </div>
+                        </div>
+                        <button type="submit" id="login-submit-btn" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            Sign In
+                        </button>
+                    </form>
+                    <div class="mt-6 text-center text-sm text-gray-500" id="login-hint"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Dashboard Templates (Student, Teacher, Admin) -->
+        <!-- Student Dashboard -->
+        <section id="screen-dashboard-student" class="screen-section hidden absolute inset-0 bg-gray-50 overflow-y-auto p-4 sm:p-8">
+            <div class="max-w-7xl mx-auto space-y-8 pb-12">
+                <h2 class="text-3xl font-bold text-gray-800 border-b pb-4"><i class="fa-solid fa-book-open text-blue-500 mr-2"></i> My Study Materials</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Notes Reader -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-[600px]">
+                        <div class="bg-blue-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="font-semibold text-blue-900"><i class="fa-regular fa-file-lines mr-2"></i>Available Notes & Documents</h3>
+                            <span class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full" id="student-notes-count">0 items</span>
+                        </div>
+                        <div class="overflow-y-auto flex-1 p-4 space-y-4" id="student-notes-list">
+                            <div class="text-center text-gray-400 mt-10"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>Loading materials...</div>
+                        </div>
+                    </div>
+                    <!-- Exams -->
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col h-[600px]">
+                        <div class="bg-orange-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="font-semibold text-orange-900"><i class="fa-solid fa-laptop-code mr-2"></i>Active Exams</h3>
+                        </div>
+                        <div class="overflow-y-auto flex-1 p-4 space-y-4" id="student-exams-list">
+                            <div class="text-center text-gray-400 mt-10">No active exams found.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teacher Dashboard -->
+        <section id="screen-dashboard-teacher" class="screen-section hidden absolute inset-0 bg-gray-50 overflow-y-auto p-4 sm:p-8">
+            <div class="max-w-7xl mx-auto space-y-8 pb-12">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 gap-4">
+                    <h2 class="text-3xl font-bold text-gray-800"><i class="fa-solid fa-chalkboard text-emerald-500 mr-2"></i> Content Management</h2>
+                    <div class="flex gap-2">
+                        <button onclick="app.showModal('upload-doc-modal')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors"><i class="fa-solid fa-file-arrow-up mr-1"></i> Upload Doc</button>
+                        <button onclick="app.showModal('create-note-modal')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors"><i class="fa-solid fa-plus mr-1"></i> New Text Note</button>
+                        <button onclick="alert('Exam builder coming soon!')" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors"><i class="fa-solid fa-plus mr-1"></i> New Exam</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2">Uploaded Resources (Notes & Documents)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 rounded-tl-lg">Type</th>
+                                    <th scope="col" class="px-6 py-3">Title</th>
+                                    <th scope="col" class="px-6 py-3">Date Added</th>
+                                    <th scope="col" class="px-6 py-3 rounded-tr-lg text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacher-content-table" class="divide-y divide-gray-200">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard -->
+        <section id="screen-dashboard-admin" class="screen-section hidden absolute inset-0 bg-gray-50 overflow-y-auto p-4 sm:p-8">
+            <div class="max-w-7xl mx-auto space-y-8 pb-12">
+                <h2 class="text-3xl font-bold text-gray-800 border-b pb-4"><i class="fa-solid fa-server text-purple-600 mr-2"></i> System Administration</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex items-center gap-4 border-l-4 border-blue-500">
+                        <div class="bg-blue-100 text-blue-600 p-4 rounded-full"><i class="fa-solid fa-users text-2xl"></i></div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Total Students</p>
+                            <p class="text-2xl font-bold text-gray-800">1,204</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex items-center gap-4 border-l-4 border-emerald-500">
+                        <div class="bg-emerald-100 text-emerald-600 p-4 rounded-full"><i class="fa-solid fa-chalkboard-user text-2xl"></i></div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Active Teachers</p>
+                            <p class="text-2xl font-bold text-gray-800">45</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex items-center gap-4 border-l-4 border-purple-500">
+                        <div class="bg-purple-100 text-purple-600 p-4 rounded-full"><i class="fa-solid fa-file-pdf text-2xl"></i></div>
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Total Materials</p>
+                            <p class="text-2xl font-bold text-gray-800" id="admin-total-materials">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2 flex justify-between items-center">
+                        Platform Content Overview
+                        <button onclick="app.loadData()" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded text-gray-700 transition-colors"><i class="fa-solid fa-rotate-right mr-1"></i> Refresh</button>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Type</th>
+                                    <th scope="col" class="px-6 py-3">Title</th>
+                                    <th scope="col" class="px-6 py-3">Author</th>
+                                    <th scope="col" class="px-6 py-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-content-table" class="divide-y divide-gray-200">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALS -->
+    <!-- Create Text Note Modal -->
+    <div id="create-note-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-gray-800">Create New Text Note</h3>
+                <button onclick="app.hideModal('create-note-modal')" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1">
+                <form id="note-form" class="space-y-4" onsubmit="event.preventDefault(); app.saveNote();">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Note Title</label>
+                        <input type="text" id="note-title" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                        <textarea id="note-content" required rows="10" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono text-sm" placeholder="Write study materials here..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+                <button onclick="app.hideModal('create-note-modal')" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">Cancel</button>
+                <button onclick="document.getElementById('note-form').requestSubmit()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium shadow-sm transition-colors">Publish Note</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div id="upload-doc-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-gray-800">Upload Document</h3>
+                <button onclick="app.hideModal('upload-doc-modal')" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6">
+                <form id="upload-form" class="space-y-4" onsubmit="event.preventDefault(); app.uploadDocument();">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Document Title</label>
+                        <input type="text" id="doc-title" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Select File (PDF, Word, Images)</label>
+                        <input type="file" id="doc-file" required accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        <p class="text-xs text-gray-500 mt-1">Files are converted to base64 for storage. Keep files small (< 2MB).</p>
+                    </div>
+                    <div class="pt-4 flex justify-end gap-3">
+                        <button type="button" onclick="app.hideModal('upload-doc-modal')" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm transition-colors">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Read Content Modal -->
+    <div id="read-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex-col items-center justify-center p-2 sm:p-6 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-full max-h-[95vh] flex flex-col relative">
+            <button onclick="app.hideModal('read-modal')" class="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors z-50"><i class="fa-solid fa-xmark text-3xl"></i></button>
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50 shrink-0">
+                <h3 id="read-title" class="font-bold text-xl text-gray-800 truncate pr-4">Document Title</h3>
+                <span id="read-type" class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-700 font-medium uppercase tracking-wider shrink-0">Type</span>
+            </div>
+            <div id="read-content-container" class="p-6 overflow-y-auto flex-1 bg-white whitespace-pre-wrap font-sans text-gray-800 leading-relaxed text-lg">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Setup -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"></script>
+    
+    <!-- Application Logic -->
+    <script type="module" src="app.js"></script>
+
+</body>
+</html>

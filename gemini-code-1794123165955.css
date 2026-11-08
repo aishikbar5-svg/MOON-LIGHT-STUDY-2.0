@@ -1,0 +1,71 @@
+/* Font Setup */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(-5%); }
+    50% { transform: translateY(5%); }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s infinite ease-in-out;
+}
+
+/* Screen Transitions */
+.screen-section {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transform: scale(0.98);
+}
+
+.screen-section.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 10;
+    transform: scale(1);
+}
+
+/* Portal Cards Hover */
+.portal-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.portal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: #c7c7cc; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1aa; 
+}
+
+/* Modal Transitions */
+.modal-active {
+    display: flex !important;
+    animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* Note Cards within List */
+.note-card {
+    animation: fadeIn 0.4s ease-out forwards;
+}

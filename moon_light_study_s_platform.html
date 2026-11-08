@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MOON LIGHT STUDY'S</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Poppins"', 'sans-serif'],
+          },
+          colors: {
+            moon: {
+              50: '#f4f6fc',
+              100: '#e7ecf7',
+              500: '#5a73d8',
+              600: '#4155b5',
+              800: '#263168',
+              900: '#1b2247',
+              950: '#0e1227',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out forwards',
+            'slide-up': 'slideUp 0.4s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+    
+    /* Document Viewer Styles */
+    .doc-preview embed, .doc-preview iframe, .doc-preview img {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body class="bg-moon-50 text-slate-800 antialiased font-sans min-h-screen flex flex-col custom-scroll">
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
+
+  <!-- Loading Overlay -->
+  <div id="global-loader" class="fixed inset-0 bg-moon-950/90 backdrop-blur-sm z-[200] hidden flex-col items-center justify-center text-white">
+    <i class="ph ph-spinner-gap animate-spin text-5xl text-moon-500 mb-4"></i>
+    <p class="text-sm font-medium tracking-wider">Processing...</p>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="sticky top-0 z-40 bg-moon-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="appState.role ? null : switchView('landing')">
+        <i class="ph-fill ph-moon-stars text-2xl text-yellow-300"></i>
+        <span class="text-lg sm:text-xl font-bold tracking-wider">MOON LIGHT STUDY'S</span>
+      </div>
+      
+      <div id="nav-actions" class="hidden flex items-center gap-3">
+        <span id="nav-role-badge" class="px-2 py-1 text-[10px] sm:text-xs font-bold rounded bg-moon-800 text-moon-100 uppercase tracking-widest border border-moon-600"></span>
+        <button onclick="handleLogout()" class="text-moon-100 hover:text-white transition-colors bg-moon-800 p-2 rounded-full">
+          <i class="ph-bold ph-sign-out text-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow flex flex-col relative overflow-hidden">
+    
+    <!-- ================= 1. LANDING VIEW ================= -->
+    <div id="view-landing" class="flex-grow flex flex-col items-center justify-center p-6 animate-fade-in relative">
+      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+      
+      <div class="text-center max-w-lg mx-auto mb-10 z-10">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-moon-900 shadow-xl mb-6 shadow-moon-900/20">
+          <i class="ph-fill ph-moon-stars text-4xl text-yellow-300"></i>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-moon-900 mb-3">Welcome to Moon Light</h1>
+        <p class="text-sm text-slate-500">Select your portal to continue learning and growing together.</p>
+      </div>
+
+      <div class="w-full max-w-sm space-y-4 z-10">
+        <button onclick="initiateLogin('student')" class="w-full bg-white p-4 rounded-2xl shadow-sm border border-slate-200 hover:border-moon-500 hover:shadow-md transition-all flex items-center gap-4 group text-left">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="ph-fill ph-student text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800">Student Portal</h3>
+            <p class="text-[11px] text-slate-500">Access notes, docs & exams</p>
+          </div>
+        </button>
+
+        <button onclick="initiateLogin('teacher')" class="w-full bg-white p-4 rounded-2xl shadow-sm border border-slate-200 hover:border-moon-500 hover:shadow-md transition-all flex items-center gap-4 group text-left">
+          <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="ph-fill ph-chalkboard-teacher text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800">Teacher Portal</h3>
+            <p class="text-[11px] text-slate-500">Upload content & manage exams</p>
+          </div>
+        </button>
+
+        <button onclick="initiateLogin('admin')" class="w-full bg-white p-4 rounded-2xl shadow-sm border border-slate-200 hover:border-moon-500 hover:shadow-md transition-all flex items-center gap-4 group text-left">
+          <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i class="ph-fill ph-shield-check text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-800">Admin Dashboard</h3>
+            <p class="text-[11px] text-slate-500">System management</p>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= 2. STUDENT LOGIN VIEW ================= -->
+    <div id="view-student-login" class="hidden flex-grow flex-col items-center justify-center p-6 animate-fade-in">
+      <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 w-full max-w-sm">
+        <button onclick="switchView('landing')" class="text-sm text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-6">
+          <i class="ph-bold ph-arrow-left"></i> Back
+        </button>
+        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mb-4">
+          <i class="ph-fill ph-student"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-6">Student Access</h2>
+
+        <form onsubmit="handleStudentLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">User ID</label>
+            <input type="text" id="student-user" required placeholder="Enter User ID" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500 focus:ring-1 focus:ring-moon-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Password</label>
+            <input type="password" id="student-pass" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500 focus:ring-1 focus:ring-moon-500">
+          </div>
+          <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl mt-4 transition-colors">
+            Login Securely
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= 3. ADMIN LOGIN VIEW ================= -->
+    <div id="view-admin-login" class="hidden flex-grow flex-col items-center justify-center p-6 animate-fade-in">
+      <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 w-full max-w-sm">
+        <button onclick="switchView('landing')" class="text-sm text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-6">
+          <i class="ph-bold ph-arrow-left"></i> Back
+        </button>
+        <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center text-2xl mb-4">
+          <i class="ph-fill ph-shield-star"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-6">Admin Access</h2>
+
+        <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Username</label>
+            <input type="text" id="admin-user" required placeholder="Enter username" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500 focus:ring-1 focus:ring-moon-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Password</label>
+            <input type="password" id="admin-pass" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500 focus:ring-1 focus:ring-moon-500">
+          </div>
+          <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl mt-4 transition-colors">
+            Login Securely
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= 3.5. TEACHER LOGIN VIEW ================= -->
+    <div id="view-teacher-login" class="hidden flex-grow flex-col items-center justify-center p-6 animate-fade-in">
+      <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 w-full max-w-sm">
+        <button onclick="switchView('landing')" class="text-sm text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-6">
+          <i class="ph-bold ph-arrow-left"></i> Back
+        </button>
+        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl mb-4">
+          <i class="ph-fill ph-chalkboard-teacher"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-6">Teacher Access</h2>
+
+        <form onsubmit="handleTeacherLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">User ID</label>
+            <input type="text" id="teacher-user" required placeholder="Enter User ID" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500 focus:ring-1 focus:ring-moon-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Password</label>
+            <input type="password" id="teacher-pass" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500 focus:ring-1 focus:ring-moon-500">
+          </div>
+          <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl mt-4 transition-colors">
+            Login Securely
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ================= 4. DASHBOARD (Shared Shell for S/T/A) ================= -->
+    <div id="view-dashboard" class="hidden flex-grow flex-col w-full h-full bg-moon-50">
+      
+      <!-- Mobile Tabs Navigation (Top for Admin/Teacher, Bottom for Student, customized below via JS) -->
+      <div class="bg-white border-b border-slate-200 sticky top-16 z-30">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6">
+          <nav id="dashboard-tabs" class="flex overflow-x-auto hide-scrollbar space-x-1 sm:space-x-4 p-2">
+            <!-- Tabs injected dynamically based on role -->
+          </nav>
+        </div>
+      </div>
+
+      <!-- Dashboard Content Area -->
+      <div class="flex-grow overflow-y-auto custom-scroll p-4 sm:p-6 w-full max-w-7xl mx-auto" id="dashboard-content">
+        <!-- Content injected dynamically -->
+      </div>
+    </div>
+
+    <!-- ================= 5. READER / TAKER FULLSCREEN VIEWS ================= -->
+    
+    <!-- Document/Note Reader -->
+    <div id="view-reader" class="hidden fixed inset-0 z-50 bg-white flex-col">
+      <header class="h-14 border-b border-slate-200 flex items-center px-4 justify-between bg-white shrink-0">
+        <button onclick="closeReader()" class="p-2 -ml-2 text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-100">
+          <i class="ph-bold ph-x text-xl"></i>
+        </button>
+        <h3 id="reader-title-bar" class="font-semibold text-slate-800 text-sm truncate max-w-[60%]">Document</h3>
+        <div class="w-8"></div> <!-- Spacer -->
+      </header>
+      <div class="flex-grow overflow-y-auto custom-scroll bg-slate-50 p-4 sm:p-8">
+        <div class="max-w-3xl mx-auto w-full bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-10 min-h-full">
+          <h1 id="reader-heading" class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2"></h1>
+          <p id="reader-meta" class="text-xs text-slate-400 mb-8 pb-4 border-b border-slate-100"></p>
+          
+          <!-- Content Container (Text or File Embed) -->
+          <div id="reader-body" class="prose prose-slate max-w-none text-sm sm:text-base whitespace-pre-wrap doc-preview">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exam Taker -->
+    <div id="view-exam-taker" class="hidden fixed inset-0 z-50 bg-slate-50 flex-col">
+      <header class="h-16 border-b border-slate-200 flex items-center px-4 justify-between bg-white shrink-0 shadow-sm">
+        <button onclick="closeReader()" class="text-sm font-medium text-slate-500 hover:text-red-500 flex items-center gap-1">
+          <i class="ph-bold ph-x"></i> Quit Exam
+        </button>
+        <span id="exam-progress-badge" class="px-3 py-1 bg-moon-100 text-moon-700 text-xs font-bold rounded-full"></span>
+      </header>
+      <div class="flex-grow overflow-y-auto custom-scroll p-4 sm:p-8">
+        <div class="max-w-2xl mx-auto w-full">
+          <div class="text-center mb-8 mt-4">
+            <h2 id="exam-title-display" class="text-2xl font-bold text-slate-900"></h2>
+          </div>
+          <form id="exam-form" onsubmit="submitExam(event)" class="space-y-6">
+            <div id="exam-questions-list" class="space-y-6"></div>
+            <div class="pt-6 pb-10">
+              <button type="submit" class="w-full py-4 bg-moon-600 hover:bg-moon-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 text-lg">
+                Submit Answers
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exam Results Modal -->
+    <div id="modal-result" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] hidden flex-col items-center justify-center p-4">
+      <div class="bg-white rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl animate-slide-up">
+        <div class="w-20 h-20 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-4xl mb-4">
+          <i class="ph-fill ph-trophy"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">Exam Completed!</h3>
+        <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Score</p>
+          <div class="text-5xl font-black text-moon-600">
+            <span id="res-score"></span><span class="text-3xl text-slate-300 mx-1">/</span><span id="res-total" class="text-3xl text-slate-500"></span>
+          </div>
+        </div>
+        <button onclick="closeResultModal()" class="w-full py-3 bg-slate-900 text-white font-bold rounded-xl">
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= FIREBASE & APP LOGIC ================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // App Setup
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'moonlight-study-app';
+    let app, db, auth, googleProvider;
+    
+    // UI State
+    const appState = {
+      role: null, // 'student', 'teacher', 'admin'
+      pendingRole: null, // Role selected before Google login
+      activeTab: 'notes', // notes, docs, exams
+      
+      // Data caches
+      notes: [],
+      docs: [],
+      exams: [],
+      
+      // Admin/Teacher builder state
+      builderQuestions: [],
+      currentExamTaking: null
+    };
+
+    let unsubNotes = null, unsubDocs = null, unsubExams = null;
+    let notesRef, docsRef, examsRef;
+
+    /* --- INITIALIZATION --- */
+    if (typeof __firebase_config !== 'undefined') {
+      const firebaseConfig = JSON.parse(__firebase_config);
+      app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      auth = getAuth(app);
+      googleProvider = new GoogleAuthProvider();
+      
+      // Firestore Collections (Rule 1 paths)
+      notesRef = collection(db, 'artifacts', appId, 'public', 'data', 'notes');
+      docsRef = collection(db, 'artifacts', appId, 'public', 'data', 'documents');
+      examsRef = collection(db, 'artifacts', appId, 'public', 'data', 'exams');
+      
+      initAuthListener();
+    } else {
+      showToast("Firebase configuration missing.", "error");
+    }
+
+    function initAuthListener() {
+      onAuthStateChanged(auth, (user) => {
+        if (user && appState.role !== 'admin') {
+          // Normal user signed in (Google or Anonymous fallback)
+          // If we had a pending role from landing page, apply it
+          if (appState.pendingRole) {
+            appState.role = appState.pendingRole;
+            appState.pendingRole = null;
+          } else if (!appState.role) {
+            // Default fallback if refreshed
+            appState.role = 'student'; 
+          }
+          setupDataListeners();
+          buildDashboardUI();
+        }
+      });
+    }
+
+    /* --- AUTHENTICATION FLOWS --- */
+    window.initiateLogin = (role) => {
+      appState.pendingRole = role;
+      
+      if (role === 'admin') {
+        switchView('admin-login');
+      } else if (role === 'teacher') {
+        switchView('teacher-login');
+      } else {
+        switchView('student-login');
+      }
+    };
+
+    window.handleStudentLogin = async (e) => {
+      e.preventDefault();
+      const user = document.getElementById('student-user').value;
+      const pass = document.getElementById('student-pass').value;
+
+      if (user === 'STUDY100' && pass === '090909') {
+        showLoader(true);
+        appState.role = 'student';
+        
+        try {
+          if (!auth.currentUser) await signInAnonymously(auth);
+          setupDataListeners();
+          buildDashboardUI();
+          showToast("Welcome Student");
+          e.target.reset();
+        } catch (err) {
+          showToast("System connection error.", "error");
+        } finally {
+          showLoader(false);
+        }
+      } else {
+        showToast("Invalid Credentials", "error");
+      }
+    };
+
+    window.handleAdminLogin = async (e) => {
+      e.preventDefault();
+      const user = document.getElementById('admin-user').value;
+      const pass = document.getElementById('admin-pass').value;
+
+      if (user === 'BARSV STUDIO' && pass === 'AISHIK@74331221') {
+        showLoader(true);
+        appState.role = 'admin';
+        
+        // Ensure Firebase is active for Admin to read/write using anonymous if not already authed
+        try {
+          if (!auth.currentUser) await signInAnonymously(auth);
+          setupDataListeners();
+          buildDashboardUI();
+          showToast("Welcome Admin");
+          e.target.reset();
+        } catch (err) {
+          showToast("System connection error.", "error");
+        } finally {
+          showLoader(false);
+        }
+      } else {
+        showToast("Invalid Credentials", "error");
+      }
+    };
+
+    window.handleTeacherLogin = async (e) => {
+      e.preventDefault();
+      const user = document.getElementById('teacher-user').value;
+      const pass = document.getElementById('teacher-pass').value;
+
+      if (user === 'MOON2STER' && pass === '74331221') {
+        showLoader(true);
+        appState.role = 'teacher';
+        
+        try {
+          // Fallback to anonymous auth to connect to Firebase if no user is signed in
+          if (!auth.currentUser) await signInAnonymously(auth);
+          setupDataListeners();
+          buildDashboardUI();
+          showToast("Welcome Teacher");
+          e.target.reset();
+        } catch (err) {
+          showToast("System connection error.", "error");
+        } finally {
+          showLoader(false);
+        }
+      } else {
+        showToast("Invalid Credentials", "error");
+      }
+    };
+
+    window.handleLogout = async () => {
+      if(appState.role !== 'admin' && appState.role !== 'teacher' && auth.currentUser) {
+        await signOut(auth);
+      }
+      appState.role = null;
+      appState.pendingRole = null;
+      
+      if(unsubNotes) unsubNotes();
+      if(unsubDocs) unsubDocs();
+      if(unsubExams) unsubExams();
+      
+      document.getElementById('nav-actions').classList.add('hidden');
+      switchView('landing');
+      showToast("Logged out successfully");
+    };
+
+
+    /* --- DATA LISTENERS --- */
+    function setupDataListeners() {
+      // Unsubscribe existing
+      if(unsubNotes) unsubNotes();
+      if(unsubDocs) unsubDocs();
+      if(unsubExams) unsubExams();
+
+      // Rule 2: Simple queries
+      unsubNotes = onSnapshot(notesRef, (snap) => {
+        appState.notes = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (b.createdAt?.toMillis()||0) - (a.createdAt?.toMillis()||0));
+        if(appState.activeTab === 'notes') renderTabContent();
+      }, (e) => console.error(e));
+
+      unsubDocs = onSnapshot(docsRef, (snap) => {
+        appState.docs = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (b.createdAt?.toMillis()||0) - (a.createdAt?.toMillis()||0));
+        if(appState.activeTab === 'docs') renderTabContent();
+      }, (e) => console.error(e));
+
+      unsubExams = onSnapshot(examsRef, (snap) => {
+        appState.exams = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (b.createdAt?.toMillis()||0) - (a.createdAt?.toMillis()||0));
+        if(appState.activeTab === 'exams') renderTabContent();
+      }, (e) => console.error(e));
+    }
+
+
+    /* --- UI ROUTING & RENDERING --- */
+    window.switchView = (viewId) => {
+      const views = ['view-landing', 'view-student-login', 'view-admin-login', 'view-teacher-login', 'view-dashboard', 'view-reader', 'view-exam-taker'];
+      views.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) { el.classList.add('hidden'); el.classList.remove('flex'); }
+      });
+      
+      const target = document.getElementById(`view-${viewId}`);
+      if(target) { target.classList.remove('hidden'); target.classList.add('flex'); }
+    };
+
+    function buildDashboardUI() {
+      switchView('dashboard');
+      
+      const badge = document.getElementById('nav-role-badge');
+      badge.textContent = `${appState.role} Portal`;
+      document.getElementById('nav-actions').classList.remove('hidden');
+
+      const tabsContainer = document.getElementById('dashboard-tabs');
+      tabsContainer.innerHTML = `
+        <button onclick="switchTab('notes')" id="tab-btn-notes" class="flex-1 sm:flex-none whitespace-nowrap py-3 px-4 text-sm font-semibold rounded-lg transition-all focus:outline-none flex items-center justify-center gap-2">
+          <i class="ph-fill ph-notebook"></i> Study Notes
+        </button>
+        <button onclick="switchTab('docs')" id="tab-btn-docs" class="flex-1 sm:flex-none whitespace-nowrap py-3 px-4 text-sm font-semibold rounded-lg transition-all focus:outline-none flex items-center justify-center gap-2">
+          <i class="ph-fill ph-file-pdf"></i> Documents
+        </button>
+        <button onclick="switchTab('exams')" id="tab-btn-exams" class="flex-1 sm:flex-none whitespace-nowrap py-3 px-4 text-sm font-semibold rounded-lg transition-all focus:outline-none flex items-center justify-center gap-2">
+          <i class="ph-fill ph-exam"></i> Exams
+        </button>
+      `;
+      switchTab('notes'); // default
+    }
+
+    window.switchTab = (tab) => {
+      appState.activeTab = tab;
+      // Update Tab Styles
+      ['notes', 'docs', 'exams'].forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if(t === tab) {
+          btn.classList.add('bg-moon-900', 'text-white', 'shadow-md');
+          btn.classList.remove('text-slate-500', 'hover:bg-slate-100');
+        } else {
+          btn.classList.remove('bg-moon-900', 'text-white', 'shadow-md');
+          btn.classList.add('text-slate-500', 'hover:bg-slate-100');
+        }
+      });
+      renderTabContent();
+    };
+
+    function renderTabContent() {
+      const container = document.getElementById('dashboard-content');
+      let html = '';
+
+      if (appState.role === 'teacher') {
+        html += renderTeacherUploadSection();
+      }
+
+      // Generate Data Grid
+      html += `<div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">`;
+      
+      const items = appState[appState.activeTab];
+      if (items.length === 0) {
+        html += `<div class="col-span-full py-16 text-center bg-white rounded-2xl border border-dashed border-slate-300 text-slate-400">
+          <i class="ph ph-folder-open text-4xl mb-2"></i><p class="text-sm">No items available here.</p>
+        </div>`;
+      } else {
+        items.forEach(item => {
+          html += generateCard(item, appState.activeTab);
+        });
+      }
+      html += `</div>`;
+      
+      container.innerHTML = html;
+
+      // If rendering exams tab for teacher, attach builder render
+      if (appState.role === 'teacher' && appState.activeTab === 'exams') {
+        renderBuilderList();
+      }
+    }
+
+    function renderTeacherUploadSection() {
+      const type = appState.activeTab;
+      
+      if (type === 'notes') {
+        return `
+        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+          <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><i class="ph-bold ph-plus-circle text-moon-600"></i> Create New Note</h3>
+          <form onsubmit="handleUpload(event, 'notes')" class="space-y-3">
+            <input type="text" id="up-title" required placeholder="Note Title (e.g. History Chapter 1)" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500">
+            <textarea id="up-content" required rows="4" placeholder="Write detailed notes here..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500 custom-scroll"></textarea>
+            <button type="submit" class="bg-moon-600 hover:bg-moon-700 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition-colors flex items-center gap-2">
+              <i class="ph-bold ph-upload-simple"></i> Publish Note
+            </button>
+          </form>
+        </div>`;
+      } 
+      else if (type === 'docs') {
+        return `
+        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+          <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><i class="ph-bold ph-plus-circle text-moon-600"></i> Upload Document</h3>
+          <form onsubmit="handleUpload(event, 'docs')" class="space-y-3">
+            <input type="text" id="up-title" required placeholder="Document Title" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500">
+            <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center bg-slate-50 relative hover:bg-slate-100 transition-colors">
+              <input type="file" id="up-file" required accept=".pdf,image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+              <i class="ph-fill ph-file-arrow-up text-3xl text-slate-400 mb-2"></i>
+              <p class="text-sm font-medium text-slate-600">Tap to select PDF or Image</p>
+              <p class="text-[10px] text-slate-400 mt-1">Max 500KB (Optimized for Firestore)</p>
+            </div>
+            <button type="submit" class="bg-moon-600 hover:bg-moon-700 text-white font-medium px-6 py-2.5 rounded-xl text-sm transition-colors flex items-center gap-2">
+              <i class="ph-bold ph-upload-simple"></i> Upload Document
+            </button>
+          </form>
+        </div>`;
+      }
+      else if (type === 'exams') {
+        return `
+        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+          <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><i class="ph-bold ph-plus-circle text-moon-600"></i> Build New Exam</h3>
+          <form onsubmit="handleUpload(event, 'exams')" class="space-y-4">
+            <input type="text" id="up-title" required placeholder="Exam Title" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-moon-500">
+            
+            <div class="p-4 bg-moon-50 rounded-xl border border-moon-100">
+              <h4 class="text-xs font-bold text-moon-800 uppercase tracking-widest mb-3">Add Question</h4>
+              <input type="text" id="q-text" placeholder="Question Text" class="w-full px-3 py-2 mb-2 rounded-lg text-sm border border-slate-200 outline-none">
+              <div class="grid grid-cols-2 gap-2 mb-2">
+                <input type="text" id="q-o0" placeholder="Option 1" class="px-3 py-1.5 rounded-lg text-xs border border-slate-200 outline-none">
+                <input type="text" id="q-o1" placeholder="Option 2" class="px-3 py-1.5 rounded-lg text-xs border border-slate-200 outline-none">
+                <input type="text" id="q-o2" placeholder="Option 3" class="px-3 py-1.5 rounded-lg text-xs border border-slate-200 outline-none">
+                <input type="text" id="q-o3" placeholder="Option 4" class="px-3 py-1.5 rounded-lg text-xs border border-slate-200 outline-none">
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="q-correct" class="px-3 py-1.5 rounded-lg text-xs border border-slate-200 outline-none bg-white">
+                  <option value="0">Option 1 Correct</option><option value="1">Option 2 Correct</option><option value="2">Option 3 Correct</option><option value="3">Option 4 Correct</option>
+                </select>
+                <button type="button" onclick="addBuilderQuestion()" class="flex-1 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-semibold">Add to List</button>
+              </div>
+            </div>
+            
+            <div id="q-builder-list" class="space-y-2 max-h-40 overflow-y-auto custom-scroll pr-1"></div>
+
+            <button type="submit" class="w-full bg-moon-600 hover:bg-moon-700 text-white font-medium px-6 py-3 rounded-xl text-sm transition-colors flex justify-center items-center gap-2">
+              <i class="ph-bold ph-paper-plane-tilt"></i> Publish Exam
+            </button>
+          </form>
+        </div>`;
+      }
+      return '';
+    }
+
+    function generateCard(item, type) {
+      let icon = '', actionText = '', actionClass = '', onClick = '';
+      
+      if (type === 'notes') {
+        icon = 'ph-notebook text-blue-500 bg-blue-50'; actionText = 'Read Note'; actionClass = 'text-blue-600 hover:bg-blue-50'; onClick = `openItem('${item.id}', 'notes')`;
+      } else if (type === 'docs') {
+        icon = 'ph-file-pdf text-rose-500 bg-rose-50'; actionText = 'View Doc'; actionClass = 'text-rose-600 hover:bg-rose-50'; onClick = `openItem('${item.id}', 'docs')`;
+      } else {
+        icon = 'ph-exam text-emerald-500 bg-emerald-50'; actionText = 'Start Exam'; actionClass = 'bg-emerald-600 text-white hover:bg-emerald-700 px-4 rounded-lg shadow-sm'; onClick = `startExam('${item.id}')`;
+      }
+
+      let adminDelBtn = '';
+      if (appState.role === 'admin') {
+        adminDelBtn = `<button onclick="deleteItem('${item.id}', '${type}')" class="absolute top-3 right-3 text-slate-400 hover:text-red-500 p-1 bg-white rounded-full shadow-sm border border-slate-100 z-10"><i class="ph-bold ph-trash"></i></button>`;
+      }
+
+      const dateStr = item.createdAt ? new Date(item.createdAt.toMillis()).toLocaleDateString() : 'Just now';
+      const metaStr = type === 'exams' ? `${item.questions?.length || 0} Questions` : dateStr;
+
+      return `
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col h-full relative group hover:shadow-md transition-shadow">
+        ${adminDelBtn}
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 ${icon}">
+          <i class="ph-fill ${icon.split(' ')[0]}"></i>
+        </div>
+        <h4 class="font-bold text-slate-800 text-lg leading-tight mb-1 line-clamp-2">${item.title}</h4>
+        <p class="text-xs font-medium text-slate-400 mb-4">${metaStr}</p>
+        
+        <div class="mt-auto pt-4 border-t border-slate-50">
+          <button onclick="${onClick}" class="w-full py-2.5 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${actionClass}">
+             ${actionText} <i class="ph-bold ph-arrow-right"></i>
+          </button>
+        </div>
+      </div>`;
+    }
+
+    /* --- DATA ACTIONS --- */
+    
+    // File reading utility
+    const readFileAsBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    };
+
+    window.handleUpload = async (e, type) => {
+      e.preventDefault();
+      const title = document.getElementById('up-title').value.trim();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const origText = btn.innerHTML;
+      
+      try {
+        btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Processing...`;
+        btn.disabled = true;
+
+        const payload = { title, createdAt: serverTimestamp(), author: auth.currentUser?.email || 'Admin' };
+
+        if (type === 'notes') {
+          payload.content = document.getElementById('up-content').value.trim();
+          await addDoc(notesRef, payload);
+        } 
+        else if (type === 'docs') {
+          const fileInput = document.getElementById('up-file');
+          if(fileInput.files.length === 0) throw new Error("Select a file");
+          const file = fileInput.files[0];
+          
+          if(file.size > 700000) { // Limit size to ~700kb to stay under Firestore 1MB doc limit easily
+            throw new Error("File too large. Max 500KB allowed.");
+          }
+          
+          payload.fileData = await readFileAsBase64(file);
+          payload.mimeType = file.type;
+          await addDoc(docsRef, payload);
+        }
+        else if (type === 'exams') {
+          if(appState.builderQuestions.length === 0) throw new Error("Add at least one question.");
+          payload.questions = appState.builderQuestions;
+          await addDoc(examsRef, payload);
+          appState.builderQuestions = [];
+        }
+
+        showToast(`${title} uploaded successfully!`);
+        e.target.reset();
+        if(type === 'exams') renderBuilderList();
+
+      } catch(err) {
+        showToast(err.message || "Upload failed", "error");
+      } finally {
+        btn.innerHTML = origText;
+        btn.disabled = false;
+      }
+    };
+
+    window.deleteItem = async (id, type) => {
+      if(!confirm("Delete this item permanently?")) return;
+      try {
+        let ref;
+        if(type === 'notes') ref = doc(notesRef, id);
+        if(type === 'docs') ref = doc(docsRef, id);
+        if(type === 'exams') ref = doc(examsRef, id);
+        
+        await deleteDoc(ref);
+        showToast("Item deleted");
+      } catch(e) {
+        showToast("Delete failed", "error");
+      }
+    };
+
+    /* --- EXAM BUILDER LOGIC --- */
+    window.addBuilderQuestion = () => {
+      const text = document.getElementById('q-text').value;
+      const opts = [
+        document.getElementById('q-o0').value,
+        document.getElementById('q-o1').value,
+        document.getElementById('q-o2').value,
+        document.getElementById('q-o3').value
+      ];
+      const correct = parseInt(document.getElementById('q-correct').value);
+
+      if(!text || opts.some(o => !o)) return showToast("Fill all question fields", "error");
+
+      appState.builderQuestions.push({ text, options: opts, correctIndex: correct });
+      
+      // Clear inputs
+      document.getElementById('q-text').value = '';
+      opts.forEach((_, i) => document.getElementById(`q-o${i}`).value = '');
+      
+      renderBuilderList();
+    };
+
+    window.removeBuilderQ = (index) => {
+      appState.builderQuestions.splice(index, 1);
+      renderBuilderList();
+    }
+
+    function renderBuilderList() {
+      const container = document.getElementById('q-builder-list');
+      if(!container) return;
+      
+      if(appState.builderQuestions.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 italic">No questions added yet.</p>`;
+        return;
+      }
+      
+      container.innerHTML = appState.builderQuestions.map((q, i) => `
+        <div class="bg-white p-2 rounded border border-slate-200 text-xs flex justify-between items-center">
+          <span class="truncate pr-2 flex-1 font-medium">${i+1}. ${q.text}</span>
+          <button type="button" onclick="removeBuilderQ(${i})" class="text-red-500 p-1"><i class="ph-bold ph-x"></i></button>
+        </div>
+      `).join('');
+    }
+
+    /* --- READER & EXAM TAKER VIEWS --- */
+    window.openItem = (id, type) => {
+      const item = appState[type].find(i => i.id === id);
+      if(!item) return;
+
+      document.getElementById('reader-title-bar').textContent = item.title;
+      document.getElementById('reader-heading').textContent = item.title;
+      document.getElementById('reader-meta').textContent = `Uploaded on ${item.createdAt ? new Date(item.createdAt.toMillis()).toLocaleDateString() : 'recently'}`;
+
+      const body = document.getElementById('reader-body');
+      
+      if(type === 'notes') {
+        body.innerHTML = `<p class="leading-relaxed text-slate-700">${item.content}</p>`;
+      } else if (type === 'docs') {
+        if(item.mimeType.startsWith('image/')) {
+          body.innerHTML = `<img src="${item.fileData}" alt="Document" class="rounded-xl shadow-sm border border-slate-200">`;
+        } else if (item.mimeType === 'application/pdf') {
+          // Fallback to embed or iframe
+          body.innerHTML = `<embed src="${item.fileData}" type="application/pdf" class="w-full h-[70vh] rounded-xl border border-slate-200">`;
+        } else {
+          body.innerHTML = `<p class="text-slate-500 italic">Preview not supported for this file type. Base64 data available.</p>`;
+        }
+      }
+
+      switchView('reader');
+    };
+
+    window.closeReader = () => {
+      appState.currentExamTaking = null;
+      switchView('dashboard');
+    };
+
+    window.startExam = (id) => {
+      const exam = appState.exams.find(e => e.id === id);
+      if(!exam) return;
+      appState.currentExamTaking = exam;
+
+      document.getElementById('exam-title-display').textContent = exam.title;
+      document.getElementById('exam-progress-badge').textContent = `0 / ${exam.questions.length}`;
+
+      const container = document.getElementById('exam-questions-list');
+      container.innerHTML = exam.questions.map((q, qIdx) => `
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h4 class="text-lg font-bold text-slate-800 mb-4"><span class="text-moon-500 mr-2">${qIdx+1}.</span> ${q.text}</h4>
+          <div class="space-y-2">
+            ${q.options.map((opt, oIdx) => `
+              <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors has-[:checked]:border-moon-500 has-[:checked]:bg-moon-50">
+                <input type="radio" name="q${qIdx}" value="${oIdx}" required onchange="updateExamProgress()" class="text-moon-600 w-4 h-4">
+                <span class="text-sm font-medium text-slate-700">${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      switchView('exam-taker');
+    };
+
+    window.updateExamProgress = () => {
+      if(!appState.currentExamTaking) return;
+      const form = document.getElementById('exam-form');
+      const total = appState.currentExamTaking.questions.length;
+      let answered = 0;
+      for(let i=0; i<total; i++) { if(form.querySelector(`input[name="q${i}"]:checked`)) answered++; }
+      document.getElementById('exam-progress-badge').textContent = `${answered} / ${total}`;
+    };
+
+    window.submitExam = (e) => {
+      e.preventDefault();
+      if(!appState.currentExamTaking) return;
+      
+      const total = appState.currentExamTaking.questions.length;
+      let score = 0;
+
+      for(let i=0; i<total; i++) {
+        const selected = e.target.querySelector(`input[name="q${i}"]:checked`);
+        if(selected && parseInt(selected.value) === appState.currentExamTaking.questions[i].correctIndex) {
+          score++;
+        }
+      }
+
+      document.getElementById('res-score').textContent = score;
+      document.getElementById('res-total').textContent = total;
+      
+      document.getElementById('modal-result').classList.remove('hidden');
+      document.getElementById('modal-result').classList.add('flex');
+    };
+
+    window.closeResultModal = () => {
+      document.getElementById('modal-result').classList.add('hidden');
+      document.getElementById('modal-result').classList.remove('flex');
+      closeReader();
+    };
+
+    /* --- UTILS --- */
+    function showLoader(show) {
+      const l = document.getElementById('global-loader');
+      if(show) { l.classList.remove('hidden'); l.classList.add('flex'); }
+      else { l.classList.add('hidden'); l.classList.remove('flex'); }
+    }
+
+    function showToast(msg, type = "success") {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      const icon = type === 'success' ? 'ph-check-circle text-green-500' : 'ph-warning-circle text-red-500';
+      
+      t.className = "bg-white border border-slate-200 shadow-xl rounded-xl px-4 py-3 flex items-center gap-3 animate-slide-up transform translate-y-0 w-full";
+      t.innerHTML = `<i class="ph-fill ${icon} text-xl shrink-0"></i><span class="text-sm font-semibold text-slate-800">${msg}</span>`;
+      
+      c.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        setTimeout(() => t.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
